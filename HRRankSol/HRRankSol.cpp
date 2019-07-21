@@ -1,50 +1,63 @@
-// HRRankSol.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include "pch.h"
+#include <cmath>
+#include <cstdio>
+#include <vector>
 #include <iostream>
+#include <algorithm>
 #include <string>
-#include <deque>
-
+#include <map>
 using namespace std;
-string getshiftedString(string str, int lShift, int rShift);
-int main()
-{
-	string repStr = "abcde";
-	string outStr = getshiftedString(repStr, 2, 1);
-	cout << outStr<<endl;
-    std::cout << "Hello World!\n"; 
-	return 0;
-}
 
-string getshiftedString(string str, int lShift, int rShift)
-{
-
-	if (lShift > 0)
+int main() {
+	
+	vector<string>fList;
+	map <string, int>vote_CountMap;
+	string cName;
+	int max = 0;
+	int maxCount = 1;
+	int count;
+	cin >> count;
+	for (int i = 0; i < count; i++)
 	{
-		char front = str.front();
-		for (int i = 0; i<str.length(); i++)
+		cin >> cName;
+		if (vote_CountMap.find(cName) == vote_CountMap.end())
+			vote_CountMap.insert(make_pair(cName,1));
+		else
+			vote_CountMap[cName]++;
+		
+	}
+	for (auto elem : vote_CountMap)
+	{
+		if (elem.second > (count / 2))
 		{
-			str[i] = str[i +1];
+			if (!fList.empty())
+				fList.clear();
+			max = elem.second;
+			fList.push_back(elem.first);
+			break;
+		
 		}
-		str[str.length()-1] = front;
-		lShift--;
-		cout << "lshift  : : " << str<<endl;
-		str = getshiftedString(str, lShift, rShift);
-	}
-
-	else if (rShift > 0)
+		else if (elem.second >= max)
 		{
-			char last = str.back();
-			for (int i = str.length()-1; i > 0; i--)
+			if (elem.second == max)
 			{
-				str[i] = str[i - 1];
+				maxCount++;
+				fList.push_back(elem.first);
 			}
-			str[0] = last;
-			rShift--;
-			cout << "rshift  ::  " << str<<endl;
-			str = getshiftedString(str, lShift, rShift);
+			else
+			{
+				if(!fList.empty())
+					fList.clear();
+				max = elem.second;
+				maxCount = 1;
+				fList.push_back(elem.first);
+			}
+		}
+
 	}
-	return str;
-	// TODO: insert return statement here
+	if (maxCount > 1)
+		sort(fList.begin(), fList.end());
+	cout << "Winner is " << fList.front();
+
+	return 0;
 }
